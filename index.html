@@ -239,9 +239,130 @@ input::placeholder{color:var(--muted);}
 .dots span:nth-child(2){animation-delay:0.2s;}
 .dots span:nth-child(3){animation-delay:0.4s;}
 @keyframes dot{0%,80%,100%{transform:scale(0.7);opacity:0.4}40%{transform:scale(1);opacity:1}}
+
+/* ══ LANDING SCREEN ══════════════════════════════════════ */
+#landing{
+  position:fixed;inset:0;z-index:500;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0;padding:2rem;
+  background:
+    radial-gradient(ellipse 55% 45% at 15% 85%, rgba(255,70,85,0.09) 0%, transparent 65%),
+    radial-gradient(ellipse 45% 35% at 85% 15%, rgba(0,229,192,0.07) 0%, transparent 65%),
+    var(--bg);
+  animation:fadein 0.5s ease both;
+}
+#landing.out{
+  animation:fadeout 0.4s ease both;
+  pointer-events:none;
+}
+@keyframes fadeout{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-8px)}}
+
+.land-logo{
+  font-family:var(--display);font-size:15px;letter-spacing:0.3em;
+  color:var(--muted2);margin-bottom:2rem;display:flex;align-items:center;gap:10px;
+}
+.land-pip{width:8px;height:8px;border-radius:50%;background:var(--red);animation:pip 2s ease-in-out infinite;}
+
+.land-title{
+  font-family:var(--display);
+  font-size:clamp(3rem,9vw,6rem);
+  line-height:0.92;letter-spacing:0.02em;
+  text-align:center;margin-bottom:2.5rem;
+  text-transform:uppercase;
+}
+.land-title .red{color:var(--red);}
+
+.land-steps{
+  display:flex;flex-direction:column;gap:0;
+  width:100%;max-width:420px;
+  margin-bottom:2rem;
+  background:var(--s1);border:1px solid var(--b);border-radius:12px;
+  overflow:hidden;
+}
+.land-step{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:14px 18px;border-bottom:1px solid var(--b);
+}
+.land-step:last-child{border-bottom:none;}
+.land-step-num{
+  font-family:var(--display);font-size:22px;color:var(--red);
+  line-height:1;flex-shrink:0;width:20px;text-align:center;margin-top:1px;
+}
+.land-step-body{}
+.land-step-title{
+  font-family:var(--mono);font-size:11px;color:var(--text);
+  letter-spacing:0.08em;text-transform:uppercase;margin-bottom:3px;font-weight:500;
+}
+.land-step-desc{
+  font-family:var(--mono);font-size:10.5px;color:var(--muted2);
+  line-height:1.6;letter-spacing:0.02em;
+}
+.land-step-desc b{color:var(--teal);}
+.land-step-desc .key{
+  display:inline-block;
+  background:var(--s2);border:1px solid var(--b2);border-radius:4px;
+  padding:1px 7px;font-family:var(--mono);font-size:10px;
+  color:var(--text);letter-spacing:0.05em;
+}
+
+.land-tip{
+  font-family:var(--mono);font-size:10px;color:var(--muted);
+  letter-spacing:0.08em;text-align:center;margin-bottom:1.75rem;
+  max-width:380px;line-height:1.7;
+}
+.land-tip b{color:var(--muted2);}
+
+.land-btn{
+  padding:14px 48px;border-radius:9px;border:none;
+  background:var(--red);color:#fff;
+  font-family:var(--display);font-size:22px;letter-spacing:0.1em;
+  cursor:pointer;transition:opacity 0.15s,transform 0.1s;
+}
+.land-btn:hover{opacity:0.87;}
+.land-btn:active{transform:scale(0.98);}
 </style>
 </head>
 <body>
+
+<!-- ── LANDING ── -->
+<div id="landing">
+  <div class="land-logo"><span class="land-pip"></span> VCT PARTY</div>
+  <div class="land-title">Watch<br><span class="red">Together.</span></div>
+
+  <div class="land-steps">
+    <div class="land-step">
+      <div class="land-step-num">1</div>
+      <div class="land-step-body">
+        <div class="land-step-title">Host creates a room</div>
+        <div class="land-step-desc">Pick a channel, share the Room ID with your group.</div>
+      </div>
+    </div>
+    <div class="land-step">
+      <div class="land-step-num">2</div>
+      <div class="land-step-body">
+        <div class="land-step-title">Everyone joins</div>
+        <div class="land-step-desc">Enter the same Room ID. When everyone's in, host hits Start.</div>
+      </div>
+    </div>
+    <div class="land-step">
+      <div class="land-step-num">3</div>
+      <div class="land-step-body">
+        <div class="land-step-title">Go fullscreen with <span class="key">F11</span></div>
+        <div class="land-step-desc"><b>Don't use the Twitch fullscreen button.</b> Press <span class="key">F11</span> on your keyboard instead — it survives resyncs so you never get kicked out of fullscreen.</div>
+      </div>
+    </div>
+    <div class="land-step">
+      <div class="land-step-num">4</div>
+      <div class="land-step-body">
+        <div class="land-step-title">Re-sync anytime</div>
+        <div class="land-step-desc">If anyone drifts out of sync, hit the Re-sync button — it reloads the stream for everyone at the same moment.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="land-tip">Press <span class="key">F11</span> to enter fullscreen · press again to exit</div>
+  <button class="land-btn" onclick="dismissLanding()">LET'S GO</button>
+</div>
 
 <!-- ── SETUP ── -->
 <div id="setup">
@@ -255,19 +376,19 @@ input::placeholder{color:var(--muted);}
       <div class="chs">
         <button class="ch on" data-ch="valorant" onclick="pickCh(this)">
           <span class="ch-name">valorant</span>
-          <span class="ch-flag">🌍 Global</span>
+          <span class="ch-flag">Global</span>
         </button>
         <button class="ch" data-ch="valorant_americas" onclick="pickCh(this)">
           <span class="ch-name">valorant_americas</span>
-          <span class="ch-flag">🌎 Americas</span>
+          <span class="ch-flag">Americas</span>
         </button>
         <button class="ch" data-ch="valorant_emea" onclick="pickCh(this)">
           <span class="ch-name">valorant_emea</span>
-          <span class="ch-flag">🌍 EMEA</span>
+          <span class="ch-flag">EMEA</span>
         </button>
         <button class="ch" data-ch="valorant_pacific" onclick="pickCh(this)">
           <span class="ch-name">valorant_pacific</span>
-          <span class="ch-flag">🌏 Pacific</span>
+          <span class="ch-flag">Pacific</span>
         </button>
       </div>
       <div class="custom">
@@ -655,6 +776,12 @@ function toast(msg, dur=3000) {
 const p = new URLSearchParams(location.search);
 if (p.get('room')) document.getElementById('room-id').value = p.get('room');
 if (p.get('ch')) document.getElementById('custom-ch').value = p.get('ch');
+
+function dismissLanding() {
+  const el = document.getElementById('landing');
+  el.classList.add('out');
+  setTimeout(() => el.style.display = 'none', 400);
+}
 </script>
 </body>
 </html>
