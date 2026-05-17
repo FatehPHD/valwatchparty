@@ -647,8 +647,8 @@ function connectMQTT(room, asHost) {
         }
 
         if (msg.destinationName.endsWith('/resync')) {
-          if (_twitchPlayer) { try { _twitchPlayer.play(); } catch(e) {} }
-          toast('<span class="tc">⟳ re-sync</span> — jumped to live');
+          doResync();
+          toast('<span class="tc">⟳ re-sync</span> — jumped to live edge');
         }
       } catch(e) {}
     };
@@ -789,10 +789,16 @@ function loadIframe() {
 
 function resync() {
   publish('resync', {});
+  doResync();
+  toast('<span class="tc">⟳ resyncing</span> — jumping to live edge');
+}
+
+function doResync() {
   if (_twitchPlayer) {
-    try { _twitchPlayer.play(); } catch(e) {}
+    try {
+      _twitchPlayer.setChannel(selCh);
+    } catch(e) {}
   }
-  toast('<span class="tc">⟳ resyncing</span> — jumping to live');
 }
 
 // ─────────────────────────────────────────────────────
