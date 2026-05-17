@@ -8,285 +8,198 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#08080a;
-  --s1:#0f0f12;
-  --s2:#16161b;
-  --s3:#1c1c22;
-  --b:rgba(255,255,255,0.06);
-  --b2:rgba(255,255,255,0.12);
-  --b3:rgba(255,255,255,0.22);
+  --bg:#0c0c0e;
+  --s1:#131316;
+  --s2:#1a1a1f;
+  --b:rgba(255,255,255,0.07);
+  --b2:rgba(255,255,255,0.13);
   --red:#ff4655;
-  --red-dim:rgba(255,70,85,0.5);
   --teal:#00e5c0;
-  --teal-dim:rgba(0,229,192,0.5);
-  --text:#f4f4f6;
-  --muted:#454550;
-  --muted2:#7a7a85;
-  --muted3:#a0a0aa;
+  --text:#efefef;
+  --muted:#505058;
+  --muted2:#888;
   --mono:'DM Mono',monospace;
   --display:'Bebas Neue',sans-serif;
   --body:'Barlow',sans-serif;
 }
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--body);overflow:hidden;}
-body::selection,::selection{background:var(--red);color:#fff;}
-
-/* subtle scanlines layered globally for broadcast feel */
-body::before{
-  content:'';position:fixed;inset:0;pointer-events:none;z-index:1;
-  background:repeating-linear-gradient(0deg,rgba(255,255,255,0.012) 0,rgba(255,255,255,0.012) 1px,transparent 1px,transparent 3px);
-  mix-blend-mode:overlay;opacity:0.6;
-}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--body);overflow:hidden}
 
 /* ══ SETUP ══════════════════════════════════════════════ */
 #setup{
-  position:relative;height:100vh;
+  height:100vh;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:1.5rem;overflow:hidden;
+  gap:0;padding:1.5rem;
   background:
-    radial-gradient(ellipse 60% 50% at 12% 88%, rgba(255,70,85,0.10) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 88% 12%, rgba(0,229,192,0.06) 0%, transparent 60%),
-    linear-gradient(180deg, var(--bg) 0%, #050507 100%);
-  animation:fadein 0.6s cubic-bezier(.2,.7,.2,1) both;
+    radial-gradient(ellipse 55% 45% at 15% 85%, rgba(255,70,85,0.09) 0%, transparent 65%),
+    radial-gradient(ellipse 45% 35% at 85% 15%, rgba(0,229,192,0.07) 0%, transparent 65%),
+    var(--bg);
+  animation:fadein 0.5s ease both;
 }
-/* corner crosshairs — broadcast HUD touch */
-#setup::before,#setup::after{
-  content:'';position:absolute;width:24px;height:24px;
-  border:1px solid var(--b2);pointer-events:none;
-}
-#setup::before{top:20px;left:20px;border-right:none;border-bottom:none;}
-#setup::after{bottom:20px;right:20px;border-left:none;border-top:none;}
-@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
 .logo{
-  font-family:var(--display);font-size:14px;letter-spacing:0.42em;
-  color:var(--muted3);margin-bottom:2.25rem;display:flex;align-items:center;gap:12px;
-  position:relative;z-index:2;
+  font-family:var(--display);font-size:15px;letter-spacing:0.3em;
+  color:var(--muted2);margin-bottom:2.5rem;display:flex;align-items:center;gap:10px;
 }
-.logo::after{
-  content:'';width:40px;height:1px;background:linear-gradient(90deg,var(--muted),transparent);
-}
-.logo-pip{width:7px;height:7px;border-radius:50%;background:var(--red);animation:pip 2s ease-in-out infinite;}
-@keyframes pip{0%,100%{box-shadow:0 0 0 0 rgba(255,70,85,0.45)}50%{box-shadow:0 0 0 7px rgba(255,70,85,0)}}
+.logo-pip{width:8px;height:8px;border-radius:50%;background:var(--red);animation:pip 2s ease-in-out infinite;}
+@keyframes pip{0%,100%{box-shadow:0 0 0 0 rgba(255,70,85,0.4)}50%{box-shadow:0 0 0 6px rgba(255,70,85,0)}}
 
 .headline{
   font-family:var(--display);
-  font-size:clamp(3.5rem,10vw,7.5rem);
-  line-height:0.9;letter-spacing:0.01em;
-  text-align:center;margin-bottom:0.7rem;
+  font-size:clamp(3.5rem,10vw,7rem);
+  line-height:0.92;letter-spacing:0.02em;
+  text-align:center;margin-bottom:0.6rem;
   text-transform:uppercase;
-  position:relative;z-index:2;
 }
 .headline .red{color:var(--red);}
 
 .tagline{
-  font-family:var(--mono);font-size:11px;letter-spacing:0.32em;
-  color:var(--muted2);text-align:center;margin-bottom:2.5rem;
-  text-transform:uppercase;position:relative;z-index:2;
+  font-family:var(--mono);font-size:12px;letter-spacing:0.12em;
+  color:var(--muted2);text-align:center;margin-bottom:3rem;
+  text-transform:uppercase;
 }
 
 .card{
-  width:100%;max-width:480px;position:relative;z-index:2;
-  background:linear-gradient(180deg, var(--s1) 0%, #0a0a0d 100%);
-  border:1px solid var(--b);border-radius:6px;
-  padding:0;display:flex;flex-direction:column;
-  overflow:hidden;
+  width:100%;max-width:460px;
+  background:var(--s1);border:1px solid var(--b);border-radius:16px;
+  padding:1.75rem;display:flex;flex-direction:column;gap:1.25rem;
 }
-.card-head{
-  display:flex;align-items:center;justify-content:space-between;gap:8px;
-  padding:11px 18px;border-bottom:1px solid var(--b);
-  font-family:var(--mono);font-size:10px;letter-spacing:0.24em;
-  color:var(--muted2);text-transform:uppercase;
-  background:rgba(255,255,255,0.015);
-}
-.card-head-l{display:flex;align-items:center;gap:8px;}
-.card-head-tick{width:5px;height:5px;background:var(--red);border-radius:50%;}
-.card-head-id{color:var(--muted);}
-.card-body{padding:1.5rem 1.5rem 1.65rem;display:flex;flex-direction:column;gap:1.15rem;}
 
 .lbl{
-  font-family:var(--mono);font-size:9px;letter-spacing:0.28em;
-  text-transform:uppercase;color:var(--muted2);margin-bottom:9px;
-  display:flex;align-items:center;gap:8px;
-}
-.lbl::before{
-  content:'';width:14px;height:1px;background:var(--muted);
+  font-family:var(--mono);font-size:10px;letter-spacing:0.18em;
+  text-transform:uppercase;color:var(--muted2);margin-bottom:7px;
 }
 
-/* channel grid — loadout-slot style */
-.chs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;}
+/* channel grid */
+.chs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:4px;}
 .ch{
-  position:relative;
-  padding:11px 12px 11px 30px;
-  border:1px solid var(--b);border-radius:4px;
-  background:rgba(255,255,255,0.01);
-  color:var(--muted3);font-family:var(--mono);
+  padding:10px 12px;border-radius:9px;border:1px solid var(--b);
+  background:transparent;color:var(--muted2);font-family:var(--mono);
   font-size:11px;cursor:pointer;text-align:left;
-  transition:border-color 0.18s, color 0.18s, background 0.18s;
-  display:flex;flex-direction:column;gap:2px;
+  transition:border-color 0.15s,color 0.15s,background 0.15s;
+  display:flex;flex-direction:column;gap:3px;
 }
-.ch::before{
-  content:attr(data-idx);
-  position:absolute;left:9px;top:50%;transform:translateY(-50%);
-  font-size:9px;color:var(--muted);letter-spacing:0.1em;
-}
-.ch:hover{border-color:var(--b2);color:var(--text);background:rgba(255,255,255,0.025);}
-.ch.on{border-color:var(--red);background:linear-gradient(135deg, rgba(255,70,85,0.10) 0%, rgba(255,70,85,0.03) 100%);color:var(--text);}
-.ch.on::before{color:var(--red);}
-.ch-name{font-size:12px;font-weight:500;letter-spacing:0.02em;}
-.ch-flag{font-size:9.5px;color:var(--muted);margin-top:2px;letter-spacing:0.05em;}
-.ch.on .ch-flag{color:var(--red-dim);}
+.ch:hover{border-color:var(--b2);color:var(--text);}
+.ch.on{border-color:var(--red);background:rgba(255,70,85,0.07);color:var(--text);}
+.ch-name{font-size:12px;font-weight:500;}
+.ch-flag{font-size:10px;color:var(--muted);margin-top:1px;}
+.ch.on .ch-flag{color:rgba(255,70,85,0.7);}
 
 /* custom input row */
-.custom{display:flex;align-items:stretch;margin-top:8px;border:1px solid var(--b);background:#050507;transition:border-color 0.18s;border-radius:4px;overflow:hidden;}
-.custom:focus-within{border-color:var(--b2);}
-.custom span{
-  font-family:var(--mono);font-size:11px;color:var(--muted2);
-  padding:10px 12px;background:rgba(255,255,255,0.02);
-  border-right:1px solid var(--b);white-space:nowrap;letter-spacing:0.05em;
-  display:flex;align-items:center;
-}
-.custom input{border:none;background:transparent;border-radius:0;}
+.custom{display:flex;align-items:center;gap:6px;margin-top:6px;}
+.custom span{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap;}
 input{
-  flex:1;background:#050507;border:1px solid var(--b);border-radius:4px;
+  flex:1;background:var(--bg);border:1px solid var(--b);border-radius:8px;
   color:var(--text);font-family:var(--mono);font-size:13px;
-  padding:11px 13px;outline:none;transition:border-color 0.18s, background 0.18s;
-  width:100%;letter-spacing:0.03em;
+  padding:10px 12px;outline:none;transition:border-color 0.2s;
+  width:100%;
 }
-input:focus{border-color:var(--b2);background:#08080b;}
+input:focus{border-color:var(--b2);}
 input::placeholder{color:var(--muted);}
-input::selection{background:var(--red);color:#fff;}
 
 /* room row */
-.room-row{display:flex;gap:6px;}
+.room-row{display:flex;gap:8px;}
 .room-row input{flex:1;}
 .btn-ghost{
-  padding:0 16px;border:1px solid var(--b);border-radius:4px;
-  background:rgba(255,255,255,0.015);color:var(--muted3);
-  font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;
-  cursor:pointer;white-space:nowrap;transition:all 0.18s;
+  padding:0 14px;border-radius:8px;border:1px solid var(--b);
+  background:transparent;color:var(--muted2);font-family:var(--mono);font-size:12px;
+  cursor:pointer;white-space:nowrap;transition:all 0.15s;
 }
-.btn-ghost:hover{border-color:var(--b2);color:var(--text);background:rgba(255,255,255,0.04);}
+.btn-ghost:hover{border-color:var(--b2);color:var(--text);}
 
 .divider{
-  display:flex;align-items:center;gap:12px;margin:0.25rem 0 0;
-  color:var(--muted);font-family:var(--mono);font-size:9px;letter-spacing:0.24em;
-  text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;
+  color:var(--muted);font-family:var(--mono);font-size:10px;letter-spacing:0.1em;
 }
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--b);}
 
 .btn-main{
-  position:relative;width:100%;padding:15px 14px;border:1px solid var(--red);border-radius:5px;
+  width:100%;padding:14px;border-radius:9px;border:none;
   background:var(--red);color:#fff;
-  font-family:var(--display);font-size:21px;letter-spacing:0.14em;
+  font-family:var(--display);font-size:20px;letter-spacing:0.08em;
+  cursor:pointer;transition:opacity 0.15s,transform 0.1s;
+}
+.btn-main:hover{opacity:0.87;}
+.btn-main:active{transform:scale(0.98);}
+.btn-alt{
+  width:100%;padding:12px;border-radius:9px;
+  border:1px solid var(--b);background:transparent;
+  color:var(--muted2);font-family:var(--body);font-size:14px;font-weight:600;
   cursor:pointer;transition:all 0.15s;
 }
-.btn-main:hover{background:#ff5867;box-shadow:0 0 0 1px var(--red), 0 8px 24px -8px rgba(255,70,85,0.5);}
-.btn-main:active{transform:translateY(1px);}
-.btn-alt{
-  width:100%;padding:12px 14px;border-radius:5px;
-  border:1px solid var(--b);background:rgba(255,255,255,0.015);
-  color:var(--muted3);font-family:var(--mono);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;font-weight:500;
-  cursor:pointer;transition:all 0.18s;
-}
-.btn-alt:hover{border-color:var(--b2);color:var(--text);background:rgba(255,255,255,0.04);}
-
-/* back row in join card */
-.back-row{display:flex;align-items:center;gap:12px;padding:11px 18px;border-bottom:1px solid var(--b);background:rgba(255,255,255,0.015);}
-.back-row .lbl-inline{font-family:var(--mono);font-size:10px;color:var(--muted2);letter-spacing:0.24em;text-transform:uppercase;}
-.back-btn{padding:5px 11px;font-size:10px;}
-
-.note{font-family:var(--mono);font-size:11px;color:var(--muted2);line-height:1.75;letter-spacing:0.02em;}
+.btn-alt:hover{border-color:var(--b2);color:var(--text);}
 
 /* ══ COUNTDOWN OVERLAY ═══════════════════════════════════ */
 #countdown-overlay{
   position:fixed;inset:0;z-index:200;
-  background:radial-gradient(ellipse 60% 60% at 50% 50%, rgba(255,70,85,0.06) 0%, transparent 70%), rgba(8,8,10,0.98);
-  display:none;flex-direction:column;align-items:center;justify-content:center;gap:0.6rem;
-  animation:fadein 0.25s ease both;
+  background:rgba(12,12,14,0.97);
+  display:none;flex-direction:column;align-items:center;justify-content:center;gap:1rem;
+  animation:fadein 0.3s ease both;
 }
-.cd-label{font-family:var(--mono);font-size:10px;letter-spacing:0.42em;color:var(--muted2);text-transform:uppercase;}
+.cd-label{font-family:var(--mono);font-size:11px;letter-spacing:0.2em;color:var(--muted2);text-transform:uppercase;}
 .cd-num{
-  font-family:var(--display);font-size:clamp(9rem,28vw,15rem);
+  font-family:var(--display);font-size:clamp(8rem,25vw,14rem);
   line-height:1;color:var(--red);
-  font-variant-numeric:tabular-nums;
   animation:cd-pulse 1s ease-in-out infinite;
-  text-shadow:0 0 60px rgba(255,70,85,0.35);
 }
-@keyframes cd-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.75;transform:scale(0.97)}}
-.cd-sub{font-family:var(--mono);font-size:11px;color:var(--muted2);letter-spacing:0.3em;text-transform:uppercase;}
+@keyframes cd-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.7;transform:scale(0.96)}}
+.cd-sub{font-family:var(--mono);font-size:12px;color:var(--muted2);letter-spacing:0.1em;}
 
 /* ══ APP ════════════════════════════════════════════════ */
 #app{display:none;flex-direction:column;height:100vh;}
 
 .bar{
   display:flex;align-items:center;justify-content:space-between;
-  padding:8px 16px;
-  background:linear-gradient(180deg, var(--s1) 0%, #0a0a0d 100%);
-  border-bottom:1px solid var(--b);
-  flex-shrink:0;gap:12px;flex-wrap:wrap;min-height:48px;
-  position:relative;
+  padding:7px 14px;background:var(--s1);border-bottom:1px solid var(--b);
+  flex-shrink:0;gap:10px;flex-wrap:wrap;min-height:46px;
 }
-.bar::after{
-  content:'';position:absolute;bottom:-1px;left:0;height:1px;
-  width:140px;background:linear-gradient(90deg, var(--red), transparent);
-}
-.bar-l{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-.bar-r{display:flex;align-items:center;gap:8px;}
+.bar-l{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.bar-r{display:flex;align-items:center;gap:7px;}
 
 .logo-sm{
-  font-family:var(--display);font-size:14px;letter-spacing:0.24em;
-  color:var(--text);display:flex;align-items:center;gap:6px;padding-right:4px;
+  font-family:var(--display);font-size:14px;letter-spacing:0.15em;
+  color:var(--muted2);display:flex;align-items:center;gap:5px;
 }
-.logo-sm .p{width:5px;height:5px;background:var(--red);border-radius:50%;}
+.logo-sm .p{width:5px;height:5px;border-radius:50%;background:var(--red);}
 
 .pill{
-  display:flex;align-items:center;gap:6px;
-  background:var(--s2);border:1px solid var(--b);border-radius:4px;
-  padding:4px 10px;font-family:var(--mono);font-size:10px;color:var(--muted2);
-  letter-spacing:0.1em;text-transform:uppercase;
+  display:flex;align-items:center;gap:5px;
+  background:var(--s2);border:1px solid var(--b);border-radius:999px;
+  padding:3px 10px;font-family:var(--mono);font-size:10px;color:var(--muted2);
 }
-.pill b{color:var(--text);font-weight:500;letter-spacing:0.02em;text-transform:none;}
-.rdot{width:5px;height:5px;background:var(--red);animation:blink 1.4s infinite;border-radius:50%;}
-.gdot{width:5px;height:5px;background:var(--teal);border-radius:50%;}
+.pill b{color:var(--text);font-weight:500;}
+.rdot{width:5px;height:5px;border-radius:50%;background:var(--red);animation:blink 1.4s infinite;}
+.gdot{width:5px;height:5px;border-radius:50%;background:var(--teal);}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}
 
 .room-copy{
-  display:flex;align-items:center;gap:6px;
-  background:var(--s2);border:1px solid var(--b);border-radius:4px;
-  padding:4px 10px;font-family:var(--mono);font-size:10px;color:var(--muted2);
-  cursor:pointer;transition:all 0.15s;user-select:none;
-  letter-spacing:0.1em;text-transform:uppercase;
+  display:flex;align-items:center;gap:5px;
+  background:var(--s2);border:1px solid var(--b);border-radius:999px;
+  padding:3px 10px;font-family:var(--mono);font-size:10px;color:var(--muted2);
+  cursor:pointer;transition:border-color 0.15s;user-select:none;
 }
-.room-copy:hover{border-color:var(--b2);color:var(--text);}
-.room-copy b{color:var(--text);font-weight:500;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-transform:none;letter-spacing:0;}
+.room-copy:hover{border-color:var(--b2);}
+.room-copy b{color:var(--text);font-weight:500;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
 .btn-bar{
-  padding:7px 14px;border:1px solid var(--b);border-radius:4px;
-  background:var(--s2);color:var(--muted3);
-  font-family:var(--mono);font-size:10.5px;letter-spacing:0.18em;text-transform:uppercase;
+  padding:6px 14px;border-radius:7px;border:1px solid var(--b);
+  background:transparent;color:var(--muted2);
+  font-family:var(--mono);font-size:11px;
   cursor:pointer;transition:all 0.15s;white-space:nowrap;
 }
-.btn-bar:hover{border-color:var(--red);color:var(--text);background:rgba(255,70,85,0.08);}
-
-.hint{
-  font-family:var(--mono);font-size:9.5px;color:var(--muted);
-  letter-spacing:0.18em;white-space:nowrap;cursor:help;text-transform:uppercase;
-  padding:0 4px;
-}
-.hint b{color:var(--muted2);font-weight:500;}
+.btn-bar:hover{border-color:var(--b2);color:var(--text);}
 
 #stream{flex:1;position:relative;background:#000;overflow:hidden;}
 #stream iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
 
 /* ══ TOAST ══════════════════════════════════════════════ */
 #toast{
-  position:fixed;bottom:22px;left:50%;
+  position:fixed;bottom:18px;left:50%;
   transform:translateX(-50%) translateY(12px);
-  background:var(--s2);border:1px solid var(--b2);border-radius:5px;
-  padding:10px 18px;font-family:var(--mono);font-size:11px;color:var(--text);
-  opacity:0;transition:opacity 0.22s, transform 0.22s;
+  background:var(--s1);border:1px solid var(--b2);border-radius:9px;
+  padding:9px 16px;font-family:var(--mono);font-size:11px;color:var(--text);
+  opacity:0;transition:opacity 0.2s,transform 0.2s;
   pointer-events:none;white-space:nowrap;z-index:999;
-  letter-spacing:0.05em;
 }
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
 .tc{color:var(--teal);}
@@ -295,54 +208,37 @@ input::selection{background:var(--red);color:#fff;}
 /* ══ WAITING SCREEN ═════════════════════════════════════ */
 #waiting{
   position:fixed;inset:0;z-index:150;
-  background:
-    radial-gradient(ellipse 50% 50% at 50% 50%, rgba(0,229,192,0.04) 0%, transparent 70%),
-    var(--bg);
+  background:var(--bg);
   display:none;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;
 }
-/* corner crosshairs for waiting too */
-#waiting::before,#waiting::after{
-  content:'';position:absolute;width:24px;height:24px;
-  border:1px solid var(--b2);
-}
-#waiting::before{top:20px;left:20px;border-right:none;border-bottom:none;}
-#waiting::after{bottom:20px;right:20px;border-left:none;border-top:none;}
-
-.wait-label{font-family:var(--mono);font-size:10px;letter-spacing:0.42em;color:var(--muted2);text-transform:uppercase;}
-.wait-title{font-family:var(--display);font-size:3rem;letter-spacing:0.08em;color:var(--text);line-height:1;}
-.wait-sub{font-family:var(--mono);font-size:11px;color:var(--muted3);letter-spacing:0.1em;text-align:center;line-height:1.8;}
+.wait-title{font-family:var(--display);font-size:2.5rem;letter-spacing:0.1em;color:var(--text);}
+.wait-sub{font-family:var(--mono);font-size:12px;color:var(--muted2);letter-spacing:0.1em;text-align:center;line-height:1.8;}
 .wait-room{
-  font-family:var(--mono);font-size:11px;color:var(--muted2);
-  background:var(--s1);border:1px solid var(--b);border-radius:5px;
-  padding:12px 28px;text-align:center;letter-spacing:0.18em;text-transform:uppercase;
+  font-family:var(--mono);font-size:13px;
+  background:var(--s1);border:1px solid var(--b);border-radius:10px;
+  padding:12px 24px;color:var(--text);text-align:center;
 }
-.wait-room span{color:var(--teal);font-size:14px;letter-spacing:0.04em;text-transform:none;margin-left:6px;}
-
-.wait-count-wrap{
-  font-family:var(--mono);font-size:10px;color:var(--muted2);
-  letter-spacing:0.2em;text-transform:uppercase;
-  display:flex;align-items:center;gap:8px;
+.wait-room span{color:var(--teal);}
+.wait-count{
+  font-family:var(--display);font-size:5rem;color:var(--teal);line-height:1;
 }
-.wait-count-wrap b{color:var(--text);font-size:14px;letter-spacing:0.04em;font-weight:500;}
-
 .wait-btn{
-  padding:13px 36px;border:1px solid var(--red);border-radius:5px;
-  background:var(--red);color:#fff;
-  font-family:var(--display);font-size:19px;letter-spacing:0.16em;
+  padding:12px 32px;border-radius:9px;border:1px solid var(--b2);
+  background:transparent;color:var(--text);
+  font-family:var(--display);font-size:18px;letter-spacing:0.1em;
   cursor:pointer;transition:all 0.15s;
 }
-.wait-btn:hover{background:#ff5867;box-shadow:0 0 0 1px var(--red), 0 8px 24px -8px rgba(255,70,85,0.5);}
-.wait-btn:active{transform:translateY(1px);}
+.wait-btn:hover{background:var(--s1);}
 
 /* dots loader */
 .dots{display:flex;gap:6px;align-items:center;}
 .dots span{
-  width:6px;height:6px;background:var(--muted2);border-radius:50%;
+  width:7px;height:7px;border-radius:50%;background:var(--muted);
   animation:dot 1.2s ease-in-out infinite;
 }
 .dots span:nth-child(2){animation-delay:0.2s;}
 .dots span:nth-child(3){animation-delay:0.4s;}
-@keyframes dot{0%,80%,100%{transform:scale(0.6);opacity:0.4}40%{transform:scale(1);opacity:1;background:var(--teal);}}
+@keyframes dot{0%,80%,100%{transform:scale(0.7);opacity:0.4}40%{transform:scale(1);opacity:1}}
 </style>
 </head>
 <body>
@@ -354,110 +250,100 @@ input::selection{background:var(--red);color:#fff;}
   <div class="tagline">One link · same stream · everyone in sync</div>
 
   <div class="card">
-    <div class="card-head">
-      <div class="card-head-l"><span class="card-head-tick"></span>Create Watch Party</div>
-      <span class="card-head-id">NODE-01</span>
-    </div>
-    <div class="card-body">
-      <div>
-        <div class="lbl">Channel</div>
-        <div class="chs">
-          <button class="ch on" data-ch="valorant" data-idx="01" onclick="pickCh(this)">
-            <span class="ch-name">valorant</span>
-            <span class="ch-flag">🌍 Global</span>
-          </button>
-          <button class="ch" data-ch="valorant_americas" data-idx="02" onclick="pickCh(this)">
-            <span class="ch-name">valorant_americas</span>
-            <span class="ch-flag">🌎 Americas</span>
-          </button>
-          <button class="ch" data-ch="valorant_emea" data-idx="03" onclick="pickCh(this)">
-            <span class="ch-name">valorant_emea</span>
-            <span class="ch-flag">🌍 EMEA</span>
-          </button>
-          <button class="ch" data-ch="valorant_pacific" data-idx="04" onclick="pickCh(this)">
-            <span class="ch-name">valorant_pacific</span>
-            <span class="ch-flag">🌏 Pacific</span>
-          </button>
-        </div>
-        <div class="custom">
-          <span>twitch.tv /</span>
-          <input id="custom-ch" placeholder="or type any channel…" oninput="onCustom()" />
-        </div>
+    <div>
+      <div class="lbl">Channel</div>
+      <div class="chs">
+        <button class="ch on" data-ch="valorant" onclick="pickCh(this)">
+          <span class="ch-name">valorant</span>
+          <span class="ch-flag">🌍 Global</span>
+        </button>
+        <button class="ch" data-ch="valorant_americas" onclick="pickCh(this)">
+          <span class="ch-name">valorant_americas</span>
+          <span class="ch-flag">🌎 Americas</span>
+        </button>
+        <button class="ch" data-ch="valorant_emea" onclick="pickCh(this)">
+          <span class="ch-name">valorant_emea</span>
+          <span class="ch-flag">🌍 EMEA</span>
+        </button>
+        <button class="ch" data-ch="valorant_pacific" onclick="pickCh(this)">
+          <span class="ch-name">valorant_pacific</span>
+          <span class="ch-flag">🌏 Pacific</span>
+        </button>
       </div>
-
-      <div>
-        <div class="lbl">Room ID — everyone uses the same one</div>
-        <div class="room-row">
-          <input id="room-id" placeholder="e.g. clutch-squad" />
-          <button class="btn-ghost" onclick="genRoom()">Random</button>
-        </div>
+      <div class="custom">
+        <span>twitch.tv /</span>
+        <input id="custom-ch" placeholder="or type any channel..." oninput="onCustom()" />
       </div>
-
-      <button class="btn-main" onclick="createRoom()">CREATE ROOM</button>
-      <div class="divider">have a room already?</div>
-      <button class="btn-alt" onclick="showJoin()">Join existing room →</button>
     </div>
+
+    <div>
+      <div class="lbl">Room ID — everyone uses the same one</div>
+      <div class="room-row">
+        <input id="room-id" placeholder="e.g. clutch-squad" />
+        <button class="btn-ghost" onclick="genRoom()">Random</button>
+      </div>
+    </div>
+
+    <button class="btn-main" onclick="createRoom()">CREATE ROOM</button>
+    <div class="divider">have a room already?</div>
+    <button class="btn-alt" onclick="showJoin()">Join existing room →</button>
   </div>
 
   <!-- JOIN CARD -->
   <div class="card" id="join-card" style="display:none;">
-    <div class="back-row">
-      <button class="btn-ghost back-btn" onclick="showCreate()">← BACK</button>
-      <span class="lbl-inline">Join a room</span>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="btn-ghost" style="padding:6px 12px;font-size:11px;" onclick="showCreate()">← back</button>
+      <span style="font-family:var(--mono);font-size:11px;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;">Join a room</span>
     </div>
-    <div class="card-body">
-      <div>
-        <div class="lbl">Room ID — ask the host for this</div>
-        <input id="join-room-id" placeholder="e.g. clutch-squad" />
-      </div>
-      <p class="note">Channel is set automatically from whoever created the room.</p>
-      <button class="btn-main" onclick="joinRoom()">JOIN ROOM</button>
+    <div>
+      <div class="lbl">Room ID — ask the host for this</div>
+      <input id="join-room-id" placeholder="e.g. clutch-squad" />
     </div>
+    <p style="font-family:var(--mono);font-size:11px;color:var(--muted2);line-height:1.7;">Channel is set automatically from whoever created the room.</p>
+    <button class="btn-main" onclick="joinRoom()">JOIN ROOM</button>
   </div>
 </div>
 
 <!-- ── WAITING ROOM ── -->
 <div id="waiting">
-  <div class="wait-label">◇ Standby</div>
   <div class="wait-title">ROOM READY</div>
   <div class="wait-room">
-    Room ID <span id="w-room-id"></span>
+    Room ID: <span id="w-room-id" style="color:var(--teal);font-size:15px;"></span>
   </div>
   <div id="w-host-msg" class="wait-sub">
     Share that Room ID with your group.<br>
     When everyone's here, you hit start.
   </div>
   <div id="w-join-msg" class="wait-sub" style="display:none;">
-    Waiting for the host to start…<br>
+    Waiting for the host to start...<br>
     The stream will load for everyone together.
   </div>
   <div class="dots"><span></span><span></span><span></span></div>
-  <div class="wait-count-wrap">
-    <b id="w-count">1</b> <span>viewer(s) in room</span>
+  <div style="font-family:var(--mono);font-size:11px;color:var(--muted2);">
+    <span id="w-count">1</span> viewer(s) in room
   </div>
-  <button class="wait-btn" id="start-btn" onclick="startCountdown()">▶ START STREAM</button>
+  <button class="wait-btn" id="start-btn" onclick="startCountdown()">▶ EVERYONE'S HERE — START</button>
 </div>
 
 <!-- ── COUNTDOWN ── -->
 <div id="countdown-overlay">
-  <div class="cd-label">◇ Stream starting in</div>
+  <div class="cd-label">stream starting in</div>
   <div class="cd-num" id="cd-num">3</div>
-  <div class="cd-sub">get ready</div>
+  <div class="cd-sub">get ready...</div>
 </div>
 
 <!-- ── APP ── -->
 <div id="app">
   <div class="bar">
     <div class="bar-l">
-      <div class="logo-sm"><span class="p"></span> VCT PARTY</div>
-      <div class="pill"><span class="rdot"></span> LIVE <b id="b-ch">valorant</b></div>
-      <div class="pill"><span class="gdot"></span> <b id="b-viewers">1</b> watching</div>
-      <div class="room-copy" onclick="copyRoom()" title="Copy room ID">
-        ROOM <b id="b-room"></b>
+      <div class="logo-sm"><span class="p"></span> VCT</div>
+      <div class="pill"><span class="rdot"></span> LIVE &nbsp;<b id="b-ch">valorant</b></div>
+      <div class="pill"><span class="gdot"></span> <b id="b-viewers">1</b>&nbsp;watching</div>
+      <div class="room-copy" onclick="copyRoom()" title="Copy room link">
+        🔗 &nbsp;<b id="b-room"></b>
       </div>
     </div>
     <div class="bar-r">
-      <span class="hint" title="Use F11 for fullscreen — Twitch's own fullscreen button will exit on re-sync">FULLSCREEN: <b>F11</b></span>
       <button class="btn-bar" onclick="resync()">⟳ Re-sync</button>
     </div>
   </div>
@@ -509,7 +395,7 @@ async function createRoom() {
   if (!ch) { toast('<span class="tr">⚠</span> Pick a channel'); return; }
   selCh = ch;
   roomId = room;
-  await connectAsHost(room);
+  await connectAbly(room);
   showWaiting(true);
 }
 
@@ -527,7 +413,7 @@ async function joinRoom() {
   if (!room) { toast('<span class="tr">⚠</span> Enter the Room ID'); return; }
   roomId = room;
   toast('<span class="tc">...</span> joining room...', 5000);
-  await connectAsJoiner(room);
+  await connectAblyAsJoiner(room);
   showWaiting(false);
 
   // If nobody responds within 6 seconds, room doesn't exist
@@ -623,7 +509,7 @@ function connectMQTT(room, asHost) {
         }
 
         if (msg.destinationName.endsWith('/resync')) {
-          loadIframe();
+          reloadStream();
           toast('<span class="tc">⟳ re-sync</span> — stream reloaded');
         }
       } catch(e) {}
@@ -650,16 +536,13 @@ function connectMQTT(room, asHost) {
   });
 }
 
-// ─────────────────────────────────────────────────────
-// CONNECTION HELPERS
-// ─────────────────────────────────────────────────────
-async function connectAsHost(room) {
+async function connectAbly(room) {
   try {
     await connectMQTT(room, true);
   } catch(e) { console.error(e); }
 }
 
-async function connectAsJoiner(room) {
+async function connectAblyAsJoiner(room) {
   try {
     await connectMQTT(room, false);
     // Ping presence so host knows we joined — host will reply with channel + start if already live
@@ -717,34 +600,36 @@ function runCountdown() {
 
 // ─────────────────────────────────────────────────────
 // STREAM
-// Everyone loads the iframe at the exact same moment
-// (after the shared countdown), so they all start from
-// the same Twitch buffer position.
+// The key idea: everyone loads the iframe at the exact
+// same moment (after the shared countdown), so they all
+// start from the same Twitch buffer position.
 // ─────────────────────────────────────────────────────
 function launchStream() {
   streamStarted = true;
   document.getElementById('b-ch').textContent = selCh;
   document.getElementById('b-room').textContent = roomId;
   document.getElementById('app').style.display = 'flex';
+
   loadIframe();
 }
 
 function loadIframe() {
   const parent = location.hostname;
   const iframe = document.getElementById('twitch-frame');
-  // Cache-bust so everyone loads fresh at the same moment
+  // Add a cache-busting ts so everyone loads fresh at the same moment
   iframe.src = `https://player.twitch.tv/?channel=${selCh}&parent=${parent}&autoplay=true&t=${Date.now()}`;
+}
+
+function reloadStream() {
+  loadIframe();
 }
 
 // ─────────────────────────────────────────────────────
 // RESYNC — anyone can trigger a reload for everyone
-// Note: this reloads the iframe, which will exit Twitch's
-// built-in fullscreen. Use browser fullscreen (F11) to
-// stay fullscreened through resyncs.
 // ─────────────────────────────────────────────────────
 function resync() {
   publish('resync', {});
-  loadIframe();
+  reloadStream();
   toast('<span class="tc">⟳ resyncing</span> — reloading stream for everyone');
 }
 
