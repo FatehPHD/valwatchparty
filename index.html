@@ -647,8 +647,7 @@ function connectMQTT(room, asHost) {
         }
 
         if (msg.destinationName.endsWith('/resync')) {
-          const hostLatency = payload.latency || 0;
-          doResync(hostLatency, false);
+          scheduleResync(payload.fireAt || Date.now());
           toast('<span class="tc">⟳ re-sync</span> — syncing to live edge');
         }
       } catch(e) {}
@@ -789,17 +788,22 @@ function loadIframe() {
 }
 
 function resync() {
-  if (!_twitchPlayer) return;
-  const stats = _twitchPlayer.getPlaybackStats();
-  const latency = stats ? stats.hlsLatencyBroadcaster : 0;
-  publish('resync', { latency });
-  doResync(latency, true);
-  toast('<span class="tc">⟳ resyncing</span> — syncing everyone to live edge');
+  // Schedule the resync 2 seconds from now so the MQTT message
+  // reaches everyone before it fires — they all reload simultaneously
+  const fireAt = Date.now() + 2000;
+  publish('resync', { fireAt });
+  scheduleResync(fireAt);
+  toast('<span class="tc">⟳ resyncing</span> — syncing in 2s…');
 }
 
-function doResync(hostLatency, isHost) {
+function doResync() {
   if (!_twitchPlayer) return;
   try { _twitchPlayer.setChannel(selCh); } catch(e) {}
+}
+
+function scheduleResync(fireAt) {
+  const delay = Math.max(0, fireAt - Date.now());
+  setTimeout(doResync, delay);
 }
 
 // ─────────────────────────────────────────────────────
