@@ -457,7 +457,7 @@ input::selection{background:var(--red);color:#fff;}
       </div>
     </div>
     <div class="bar-r">
-      <span class="hint" title="Use F11 for fullscreen — Twitch's own fullscreen button will exit on re-sync">FULLSCREEN: <b>F11</b></span>
+      <span class="hint" title="Stream starts muted (browser rule) — click the volume icon in the Twitch player to unmute. Use F11 for fullscreen.">UNMUTE & <b>F11</b></span>
       <button class="btn-bar" onclick="resync()">⟳ Re-sync</button>
     </div>
   </div>
@@ -728,8 +728,17 @@ function launchStream() {
 
 function loadIframe() {
   const parent = location.hostname;
-  const iframe = document.getElementById('twitch-frame');
-  iframe.src = `https://player.twitch.tv/?channel=${selCh}&parent=${parent}&autoplay=true&t=${Date.now()}`;
+  const stream = document.getElementById('stream');
+  const old = document.getElementById('twitch-frame');
+  if (old) old.remove();
+  const iframe = document.createElement('iframe');
+  iframe.id = 'twitch-frame';
+  iframe.allowFullscreen = true;
+  iframe.setAttribute('allow', 'autoplay; fullscreen');
+  // muted=true so autoplay is guaranteed to work — user can unmute via the
+  // Twitch player's own volume control (bottom-left of the player).
+  iframe.src = `https://player.twitch.tv/?channel=${selCh}&parent=${parent}&autoplay=true&muted=true&t=${Date.now()}`;
+  stream.appendChild(iframe);
 }
 
 function resync() {
