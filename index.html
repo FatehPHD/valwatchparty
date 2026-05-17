@@ -623,15 +623,7 @@ function connectMQTT(room, asHost) {
         }
 
         if (msg.destinationName.endsWith('/resync')) {
-          document.getElementById('app').style.display = 'flex';
-
-          // Same visibility delay as launchStream() to reduce Twitch autoplay blocks.
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              loadIframe();
-            });
-          });
-
+          loadIframe();
           toast('<span class="tc">⟳ re-sync</span> — stream reloaded');
         }
       } catch(e) {}
@@ -730,17 +722,8 @@ function launchStream() {
   streamStarted = true;
   document.getElementById('b-ch').textContent = selCh;
   document.getElementById('b-room').textContent = roomId;
-
-  const app = document.getElementById('app');
-  app.style.display = 'flex';
-
-  // Twitch can block autoplay if the iframe is created while hidden.
-  // Wait two frames so the app/player area is visibly rendered first.
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      loadIframe();
-    });
-  });
+  document.getElementById('app').style.display = 'flex';
+  loadIframe();
 }
 
 function loadIframe() {
@@ -754,21 +737,13 @@ function loadIframe() {
   iframe.setAttribute('allow', 'autoplay; fullscreen');
   // muted=true so autoplay is guaranteed to work — user can unmute via the
   // Twitch player's own volume control (bottom-left of the player).
-  iframe.src = `https://player.twitch.tv/?channel=${encodeURIComponent(selCh)}&parent=${parent}&autoplay=true&muted=true`;
+  iframe.src = `https://player.twitch.tv/?channel=${selCh}&parent=${parent}&autoplay=true&muted=true&t=${Date.now()}`;
   stream.appendChild(iframe);
 }
 
 function resync() {
-  publish('resync', { ts: Date.now() });
-
-  document.getElementById('app').style.display = 'flex';
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      loadIframe();
-    });
-  });
-
+  publish('resync', {});
+  loadIframe();
   toast('<span class="tc">⟳ resyncing</span> — reloading stream for everyone');
 }
 
