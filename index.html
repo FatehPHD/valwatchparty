@@ -732,8 +732,15 @@ function launchStream() {
 function loadIframe() {
   const parent = location.hostname;
   const iframe = document.getElementById('twitch-frame');
-  // Cache-bust so everyone loads fresh at the same moment
-  iframe.src = `https://player.twitch.tv/?channel=${selCh}&parent=${parent}&autoplay=true&t=${Date.now()}`;
+  // Start muted — browsers always allow muted autoplay.
+  // We unmute after 1.5s once the player has started.
+  iframe.src = `https://player.twitch.tv/?channel=${selCh}&parent=${parent}&autoplay=true&muted=true&t=${Date.now()}`;
+  clearTimeout(loadIframe._unmuteTimer);
+  loadIframe._unmuteTimer = setTimeout(() => {
+    try {
+      iframe.contentWindow.postMessage({ eventName: 'setMuted', params: { muted: false } }, 'https://player.twitch.tv');
+    } catch(e) {}
+  }, 1500);
 }
 
 // ─────────────────────────────────────────────────────
