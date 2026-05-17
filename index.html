@@ -150,8 +150,8 @@ input::placeholder{color:var(--muted);}
 
 .bar{
   display:flex;align-items:center;justify-content:space-between;
-  padding:7px 14px;background:var(--s1);border-bottom:1px solid var(--b);
-  flex-shrink:0;gap:10px;flex-wrap:wrap;min-height:46px;
+  padding:4px 10px;background:var(--s1);border-bottom:1px solid var(--b);
+  flex-shrink:0;gap:8px;flex-wrap:wrap;min-height:32px;
 }
 .bar-l{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .bar-r{display:flex;align-items:center;gap:7px;}
@@ -354,6 +354,13 @@ input::placeholder{color:var(--muted);}
     <div class="land-step">
       <div class="land-step-num">4</div>
       <div class="land-step-body">
+        <div class="land-step-title">Let the stream start itself</div>
+        <div class="land-step-desc">It might show paused for a sec — don't click play, it'll start on its own.</div>
+      </div>
+    </div>
+    <div class="land-step">
+      <div class="land-step-num">5</div>
+      <div class="land-step-body">
         <div class="land-step-title">Re-sync anytime</div>
         <div class="land-step-desc">If anyone drifts out of sync, hit the Re-sync button — it reloads the stream for everyone at the same moment.</div>
       </div>
@@ -466,9 +473,8 @@ input::placeholder{color:var(--muted);}
 <div id="app">
   <div class="bar">
     <div class="bar-l">
-      <div class="logo-sm"><span class="p"></span> VCT</div>
       <div class="pill"><span class="rdot"></span> LIVE &nbsp;<b id="b-ch">valorant</b></div>
-      <div class="pill"><span class="gdot"></span> <b id="b-viewers">1</b>&nbsp;watching</div>
+      <div class="pill"><span class="gdot"></span> <b id="b-viewers">1</b></div>
       <div class="room-copy" onclick="copyRoom()" title="Copy room link">
         🔗 &nbsp;<b id="b-room"></b>
       </div>
