@@ -276,7 +276,8 @@ input::selection{background:var(--red);color:#fff;}
 .hint b{color:var(--muted2);font-weight:500;}
 
 #stream{flex:1;position:relative;background:#000;overflow:hidden;}
-#stream #twitch-frame, #stream iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
+#stream #twitch-frame{position:absolute;inset:0;width:100%;height:100%;}
+#stream #twitch-frame iframe, #stream iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
 
 /* ══ TOAST ══════════════════════════════════════════════ */
 #toast{
@@ -735,16 +736,18 @@ function loadIframe() {
   const container = document.getElementById('twitch-frame');
   container.innerHTML = '';
 
+  const w = container.offsetWidth || window.innerWidth;
+  const h = container.offsetHeight || window.innerHeight;
+
   const player = new Twitch.Player('twitch-frame', {
     channel: selCh,
     parent: [parent],
-    width: '100%',
-    height: '100%',
+    width: w,
+    height: h,
     autoplay: true,
     muted: false,
   });
 
-  // Unmute after ready in case browser muted it
   player.addEventListener(Twitch.Player.READY, () => {
     player.setMuted(false);
     player.play();
