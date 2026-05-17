@@ -278,22 +278,6 @@ input::selection{background:var(--red);color:#fff;}
 #stream{flex:1;position:relative;background:#000;overflow:hidden;}
 #stream iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
 
-#click-start{
-  display:none;position:absolute;inset:0;z-index:10;
-  background:radial-gradient(ellipse 60% 60% at 50% 50%, rgba(255,70,85,0.06) 0%, transparent 70%), var(--bg);
-  flex-direction:column;align-items:center;justify-content:center;
-  cursor:pointer;
-}
-#click-start:hover .cs-btn{background:#ff5867;box-shadow:0 0 0 1px var(--red), 0 8px 32px -8px rgba(255,70,85,0.5);}
-.cs-inner{display:flex;flex-direction:column;align-items:center;gap:1rem;pointer-events:none;}
-.cs-label{font-family:var(--mono);font-size:10px;letter-spacing:0.42em;color:var(--muted2);text-transform:uppercase;}
-.cs-btn{
-  font-family:var(--display);font-size:clamp(1.8rem,5vw,3rem);letter-spacing:0.14em;
-  color:#fff;background:var(--red);border:1px solid var(--red);
-  padding:18px 48px;border-radius:5px;transition:all 0.15s;
-}
-.cs-sub{font-family:var(--mono);font-size:11px;color:var(--muted2);letter-spacing:0.1em;text-align:center;}
-
 /* ══ TOAST ══════════════════════════════════════════════ */
 #toast{
   position:fixed;bottom:22px;left:50%;
@@ -473,25 +457,17 @@ input::selection{background:var(--red);color:#fff;}
       </div>
     </div>
     <div class="bar-r">
-      <span class="hint" title="Use F11 for browser fullscreen — survives resyncs">FULLSCREEN: <b>F11</b></span>
+      <span class="hint" title="Use F11 for fullscreen — Twitch's own fullscreen button will exit on re-sync">FULLSCREEN: <b>F11</b></span>
       <button class="btn-bar" onclick="resync()">⟳ Re-sync</button>
     </div>
   </div>
   <div id="stream">
-    <div id="click-start" onclick="userClickedStart()">
-      <div class="cs-inner">
-        <div class="cs-label">◇ Stream ready</div>
-        <div class="cs-btn">▶ CLICK TO START</div>
-        <div class="cs-sub">Each viewer clicks once — then you're all synced</div>
-      </div>
-    </div>
-    <div id="twitch-frame" style="position:absolute;inset:0;width:100%;height:100%;"></div>
+    <iframe id="twitch-frame" allowfullscreen allow="autoplay"></iframe>
   </div>
 </div>
 
 <div id="toast"></div>
 
-<script src="https://player.twitch.tv/js/embed/v1.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.1.0/paho-mqtt.min.js"></script>
 <script>
 // ─────────────────────────────────────────────────────
@@ -647,8 +623,8 @@ function connectMQTT(room, asHost) {
         }
 
         if (msg.destinationName.endsWith('/resync')) {
-          scheduleResync(payload.fireAt || Date.now());
-          toast('<span class="tc">⟳ re-sync</span> — syncing to live edge');
+          loadIframe();
+          toast('<span class="tc">⟳ re-sync</span> — stream reloaded');
         }
       } catch(e) {}
     };
@@ -741,69 +717,35 @@ function runCountdown() {
 
 // ─────────────────────────────────────────────────────
 // STREAM
+// Everyone loads the iframe at the exact same moment
+// (after the shared countdown), so they all start from
+// the same Twitch buffer position.
 // ─────────────────────────────────────────────────────
 function launchStream() {
   streamStarted = true;
   document.getElementById('b-ch').textContent = selCh;
   document.getElementById('b-room').textContent = roomId;
   document.getElementById('app').style.display = 'flex';
-  // Don't load the iframe yet — show a click-to-start overlay instead.
-  // Each viewer must click once so the browser registers a user gesture,
-  // which allows Twitch autoplay. After that first click, resyncs work.
-  document.getElementById('click-start').style.display = 'flex';
-}
-
-let _twitchPlayer = null;
-
-function userClickedStart() {
-  document.getElementById('click-start').style.display = 'none';
   loadIframe();
 }
 
 function loadIframe() {
   const parent = location.hostname;
-
-  if (_twitchPlayer) {
-    // Player already exists — just unpause and jump to live
-    try { _twitchPlayer.play(); } catch(e) {}
-    return;
-  }
-
-  // Create player once. Never destroy it — destroying triggers the
-  // visibility check again and breaks autoplay.
-  _twitchPlayer = new Twitch.Player('twitch-frame', {
-    channel: selCh,
-    parent: [parent],
-    width: '100%',
-    height: '100%',
-    autoplay: true,
-    muted: false,
-  });
-
-  _twitchPlayer.addEventListener(Twitch.Player.PLAYBACK_BLOCKED, () => {
-    // Autoplay was blocked — fall back to muted so it at least starts
-    _twitchPlayer.setMuted(true);
-    _twitchPlayer.play();
-  });
+  const iframe = document.getElementById('twitch-frame');
+  // Cache-bust so everyone loads fresh at the same moment
+  iframe.src = `https://player.twitch.tv/?channel=${selCh}&parent=${parent}&autoplay=true&t=${Date.now()}`;
 }
 
+// ─────────────────────────────────────────────────────
+// RESYNC — anyone can trigger a reload for everyone
+// Note: this reloads the iframe, which will exit Twitch's
+// built-in fullscreen. Use browser fullscreen (F11) to
+// stay fullscreened through resyncs.
+// ─────────────────────────────────────────────────────
 function resync() {
-  // Schedule the resync 2 seconds from now so the MQTT message
-  // reaches everyone before it fires — they all reload simultaneously
-  const fireAt = Date.now() + 2000;
-  publish('resync', { fireAt });
-  scheduleResync(fireAt);
-  toast('<span class="tc">⟳ resyncing</span> — syncing in 2s…');
-}
-
-function doResync() {
-  if (!_twitchPlayer) return;
-  try { _twitchPlayer.setChannel(selCh); } catch(e) {}
-}
-
-function scheduleResync(fireAt) {
-  const delay = Math.max(0, fireAt - Date.now());
-  setTimeout(doResync, delay);
+  publish('resync', {});
+  loadIframe();
+  toast('<span class="tc">⟳ resyncing</span> — reloading stream for everyone');
 }
 
 // ─────────────────────────────────────────────────────
