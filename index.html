@@ -799,16 +799,7 @@ function resync() {
 
 function doResync(hostLatency, isHost) {
   if (!_twitchPlayer) return;
-  try {
-    const stats = _twitchPlayer.getPlaybackStats();
-    const myLatency = stats ? stats.hlsLatencyBroadcaster : 0;
-    // If we're more than 2s behind the host (or this is the host), jump to live edge
-    if (isHost || myLatency > hostLatency + 2) {
-      _twitchPlayer.setChannel(selCh);
-    }
-  } catch(e) {
-    _twitchPlayer.setChannel(selCh);
-  }
+  try { _twitchPlayer.setChannel(selCh); } catch(e) {}
 }
 
 // ─────────────────────────────────────────────────────
