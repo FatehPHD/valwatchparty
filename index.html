@@ -405,6 +405,11 @@ input::placeholder{color:var(--muted);}
       </div>
     </div>
 
+    <div>
+      <div class="lbl">Password — to keep chat out lol</div>
+      <input id="room-pass" type="password" placeholder="only your group knows this" />
+    </div>
+
     <button class="btn-main" onclick="createRoom()">CREATE ROOM</button>
     <div class="divider">have a room already?</div>
     <button class="btn-alt" onclick="showJoin()">Join existing room →</button>
@@ -419,6 +424,10 @@ input::placeholder{color:var(--muted);}
     <div>
       <div class="lbl">Room ID — ask the host for this</div>
       <input id="join-room-id" placeholder="e.g. clutch-squad" />
+    </div>
+    <div>
+      <div class="lbl">Password</div>
+      <input id="join-room-pass" type="password" placeholder="ask the host for this too" />
     </div>
     <p style="font-family:var(--mono);font-size:11px;color:var(--muted2);line-height:1.7;">Channel is set automatically from whoever created the room.</p>
     <button class="btn-main" onclick="joinRoom()">JOIN ROOM</button>
@@ -482,6 +491,7 @@ input::placeholder{color:var(--muted);}
 // ─────────────────────────────────────────────────────
 let selCh = 'valorant';
 let roomId = '';
+let roomPass = '';
 let mqttClient = null;
 let myId = Math.random().toString(36).slice(2,8);
 let memberCount = 1;
@@ -512,10 +522,13 @@ async function createRoom() {
   const custom = document.getElementById('custom-ch').value.trim().replace('twitch.tv/','');
   const ch = custom || selCh;
   const room = document.getElementById('room-id').value.trim();
+  const pass = document.getElementById('room-pass').value.trim();
   if (!room) { toast('<span class="tr">⚠</span> Enter a Room ID'); return; }
+  if (!pass) { toast('<span class="tr">⚠</span> Enter a password'); return; }
   if (!ch) { toast('<span class="tr">⚠</span> Pick a channel'); return; }
   selCh = ch;
   roomId = room;
+  roomPass = pass;
   await connectAbly(room);
   showWaiting(true);
 }
@@ -531,8 +544,11 @@ function showCreate() {
 
 async function joinRoom() {
   const room = document.getElementById('join-room-id').value.trim();
+  const pass = document.getElementById('join-room-pass').value.trim();
   if (!room) { toast('<span class="tr">⚠</span> Enter the Room ID'); return; }
+  if (!pass) { toast('<span class="tr">⚠</span> Enter the password'); return; }
   roomId = room;
+  roomPass = pass;
   toast('<span class="tc">...</span> joining room...', 5000);
   await connectAblyAsJoiner(room);
   showWaiting(false);
@@ -558,6 +574,7 @@ function backToSetup() {
   presenceMap = {};
   memberCount = 1;
   roomId = '';
+  roomPass = '';
   selCh = 'valorant';
   streamStarted = false;
 
@@ -573,7 +590,11 @@ function backToSetup() {
 // MQTT — HiveMQ public broker, free, no account needed
 // ─────────────────────────────────────────────────────
 function mqttTopic(suffix) {
-  return 'vctparty/' + roomId + '/' + suffix;
+  // Password is hashed into the topic — wrong password = completely different topic
+  const key = roomId + ':' + roomPass;
+  let hash = 0;
+  for (let i = 0; i < key.length; i++) hash = ((hash << 5) - hash + key.charCodeAt(i)) | 0;
+  return 'vctparty/' + Math.abs(hash).toString(36) + '/' + suffix;
 }
 
 function publish(type, data) {
