@@ -647,8 +647,9 @@ function connectMQTT(room, asHost) {
         }
 
         if (msg.destinationName.endsWith('/resync')) {
-          doResync();
-          toast('<span class="tc">⟳ re-sync</span> — jumped to live edge');
+          const hostLatency = payload.latency || 0;
+          doResync(hostLatency, false);
+          toast('<span class="tc">⟳ re-sync</span> — syncing to live edge');
         }
       } catch(e) {}
     };
@@ -788,16 +789,25 @@ function loadIframe() {
 }
 
 function resync() {
-  publish('resync', {});
-  doResync();
-  toast('<span class="tc">⟳ resyncing</span> — jumping to live edge');
+  if (!_twitchPlayer) return;
+  const stats = _twitchPlayer.getPlaybackStats();
+  const latency = stats ? stats.hlsLatencyBroadcaster : 0;
+  publish('resync', { latency });
+  doResync(latency, true);
+  toast('<span class="tc">⟳ resyncing</span> — syncing everyone to live edge');
 }
 
-function doResync() {
-  if (_twitchPlayer) {
-    try {
+function doResync(hostLatency, isHost) {
+  if (!_twitchPlayer) return;
+  try {
+    const stats = _twitchPlayer.getPlaybackStats();
+    const myLatency = stats ? stats.hlsLatencyBroadcaster : 0;
+    // If we're more than 2s behind the host (or this is the host), jump to live edge
+    if (isHost || myLatency > hostLatency + 2) {
       _twitchPlayer.setChannel(selCh);
-    } catch(e) {}
+    }
+  } catch(e) {
+    _twitchPlayer.setChannel(selCh);
   }
 }
 
