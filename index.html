@@ -278,6 +278,22 @@ input::selection{background:var(--red);color:#fff;}
 #stream{flex:1;position:relative;background:#000;overflow:hidden;}
 #stream iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
 
+#click-start{
+  display:none;position:absolute;inset:0;z-index:10;
+  background:radial-gradient(ellipse 60% 60% at 50% 50%, rgba(255,70,85,0.06) 0%, transparent 70%), var(--bg);
+  flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;
+}
+#click-start:hover .cs-btn{background:#ff5867;box-shadow:0 0 0 1px var(--red), 0 8px 32px -8px rgba(255,70,85,0.5);}
+.cs-inner{display:flex;flex-direction:column;align-items:center;gap:1rem;pointer-events:none;}
+.cs-label{font-family:var(--mono);font-size:10px;letter-spacing:0.42em;color:var(--muted2);text-transform:uppercase;}
+.cs-btn{
+  font-family:var(--display);font-size:clamp(1.8rem,5vw,3rem);letter-spacing:0.14em;
+  color:#fff;background:var(--red);border:1px solid var(--red);
+  padding:18px 48px;border-radius:5px;transition:all 0.15s;
+}
+.cs-sub{font-family:var(--mono);font-size:11px;color:var(--muted2);letter-spacing:0.1em;text-align:center;}
+
 /* ══ TOAST ══════════════════════════════════════════════ */
 #toast{
   position:fixed;bottom:22px;left:50%;
@@ -462,7 +478,13 @@ input::selection{background:var(--red);color:#fff;}
     </div>
   </div>
   <div id="stream">
-    <iframe id="twitch-frame" allowfullscreen allow="autoplay; fullscreen"></iframe>
+    <div id="click-start" onclick="userClickedStart()">
+      <div class="cs-inner">
+        <div class="cs-label">◇ Stream ready</div>
+        <div class="cs-btn">▶ CLICK TO START</div>
+        <div class="cs-sub">Each viewer clicks once — then you're all synced</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -723,6 +745,14 @@ function launchStream() {
   document.getElementById('b-ch').textContent = selCh;
   document.getElementById('b-room').textContent = roomId;
   document.getElementById('app').style.display = 'flex';
+  // Don't load the iframe yet — show a click-to-start overlay instead.
+  // Each viewer must click once so the browser registers a user gesture,
+  // which allows Twitch autoplay. After that first click, resyncs work.
+  document.getElementById('click-start').style.display = 'flex';
+}
+
+function userClickedStart() {
+  document.getElementById('click-start').style.display = 'none';
   loadIframe();
 }
 
@@ -735,9 +765,7 @@ function loadIframe() {
   iframe.id = 'twitch-frame';
   iframe.allowFullscreen = true;
   iframe.setAttribute('allow', 'autoplay; fullscreen');
-  // muted=true so autoplay is guaranteed to work — user can unmute via the
-  // Twitch player's own volume control (bottom-left of the player).
-  iframe.src = `https://player.twitch.tv/?channel=${selCh}&parent=${parent}&autoplay=true&muted=true&t=${Date.now()}`;
+  iframe.src = `https://player.twitch.tv/?channel=${selCh}&parent=${parent}&autoplay=true&t=${Date.now()}`;
   stream.appendChild(iframe);
 }
 
